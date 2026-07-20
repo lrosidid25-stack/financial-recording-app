@@ -1,29 +1,30 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { accounts, histories } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { supabase } from "@/db";
 
 export async function GET() {
-  const allAccounts = await db.select().from(accounts).orderBy(desc(accounts.createdAt));
-  const allHistories = await db.select().from(histories).orderBy(desc(histories.date));
-  const accountRows = allAccounts.map((a) => ({
-    id: a.id, siteName: a.siteName, link: a.link,
-    username: a.username, password: a.password,
-    totalWin: Number(a.totalWin), totalLoss: Number(a.totalLoss),
-    net: Number(a.totalWin) - Number(a.totalLoss), notes: a.notes || "",
-  }));
-  const historyRows = allHistories.map((h) => {
-    const acc = allAccounts.find((a) => a.id === h.accountId);
-    const d = new Date(h.date);
-    const dateStr = d.toLocaleDateString("id-ID", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
-    const timeStr = d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-    return {
-      id: h.id, siteName: acc?.siteName || "Unknown",
-      username: acc?.username || "",
-      type: h.type === "win" ? "Menang" : "Kalah",
-      amount: Number(h.amount), description: h.description || "",
-      date: `${dateStr} ${timeStr}`,
-    };
-  });
-  return NextResponse.json({ accounts: accountRows, histories: historyRows });
+  try {
+    const { data: accounts, error: accErr } = await supabase.from("accounts").select("*");
+    if (accErr) throw accErr;
+    const { data: histories, error: histErr } = await supabase.from("histories").select("*").order("date", { ascending: false });
+    if (histErr) throw histErr;
+    // Flatten: map account_id to siteName and username
+    const accMap = Object.fromEntries(accounts.map((a: any) => [a.id, { siteName: a.site_name, username: a.username }]));
+    const flatHistories = histories.map((h: any) => ({
+      id: h.id, accountId: h.account_id, type: h.type,
+      amount: Number(h.amount), description: h.description, date: h.date,
+      ...(accMap[h.account_id] || { siteName: "", username: "" }),
+    }));
+    return NextResponse.json({
+      accounts: accounts.map((a: any) => ({
+        siteName: a.site_name, link: a.link, username: a.username,
+        password: a.password, totalWin: Number(a.total_win),
+        totalLoss: Number(a.total_loss), net: Number(a.total_win) - Number(a.total_loss),
+        notes: a.notes,
+      })),
+      histories: flatHistories,
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ accounts: [], histories: [] });
+  }
 }
