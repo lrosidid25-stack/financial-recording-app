@@ -1,17 +1,12 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { createClient } from "@supabase/supabase-js";
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is required.");
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.");
 }
 
-export const pool = new Pool({ 
-  connectionString: databaseUrl,
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 15000,
-  max: 2,
-  idleTimeoutMillis: 30000,
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false },
 });
-
-export const db = drizzle(pool);
