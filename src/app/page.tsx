@@ -477,13 +477,7 @@ export default function HomePage() {
                       <p className="text-[10px] text-slate-500 uppercase tracking-wider">Kalah</p>
                       <p className="text-sm font-bold text-red-400">{formatCurrency(loss)}</p>
                     </div>
-                    <div className="p-3 text-center">
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wider">Net</p>
-                      <p className={`text-sm font-bold ${net >= 0 ? "text-emerald-400" : "text-red-400"}`}>{net >= 0 ? "+" : ""}{formatCurrency(net)}</p>
-                    </div>
-                  </div>
-                  <div className="border-t border-slate-700/50 p-3">
-                    <button onClick={() => openHistory(acc)} className="w-full py-2 text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition">
+                    <div className="iÀ´ÌÑ•áĞµ•¹Ñ•Èˆø(€€€€€€€€€€€€€€€€€€€€€€ñÀ±…ÍÍ9…µ”ô‰Ñ•áĞµlÄÁÁátÑ•áĞµÍ±…Ñ”´ÔÀÀÕÁÁ•É…Í”ÑÉ…­¥¹œµİ¥‘•Èˆù9•Ğğ½Àø(€€€€€€€€€€€€€€€€€€€€€€ñÀ±…ÍÍ9…µ”õíÑ•áĞµÍ´™½¹Ğµ‰½±€‘í¹•Ğ€øô€À€ü€‰Ñ•áĞµ•µ•É…±´ĞÀÀˆ€è€‰Ñ•áĞµÉ•´ĞÀÀ‰õôùí¹•Ğ€øô€À€ü€ˆ¬ˆ€è€ˆ‰õí™½Éµ…ÑÕÉÉ•¹ä¡¹•Ğ¥ôğ½Àø(€€€€€€€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰‰½É‘•ÈµĞ‰½É‘•ÈµÍ±…Ñ”´ÜÀÀ¼ÔÀÀ´Ìˆø(€€€€€€€€€€€€€€€€€€€€ñ‰ÕÑÑ½¸½¹±¥¬õì ¤€ôø½Á•¹!¥ÍÑ½Éä¡…Œ¥ô±…ÍÍ9…µ”ô‰Üµ™Õ±°ºpy-2 text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition">
                       ğŸ“Š Lihat Riwayat & Tambah Data
                     </button>
                   </div>
@@ -496,7 +490,7 @@ export default function HomePage() {
 
       {showAccountModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-lg max-h[90vh] overflow-y-auto">
+          <div className="bg-slate-800 border border-slate-704 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-white">{editingAccount ? "Edit Akun" : "Tambah Akun Baru"}</h3>
@@ -559,149 +553,4 @@ export default function HomePage() {
                   <p className="text-base sm:text-lg font-bold text-red-400">{formatCurrency(Number(selectedAccount.totalLoss))}</p>
                 </div>
                 <div className={`rounded-xl p-3 text-center border ${Number(selectedAccount.totalWin) - Number(selectedAccount.totalLoss) >= 0 ? "bg-emerald-500/10 border-emerald-500/20" : "bg-red-500/10 border-red-500/20"}`}>
-                  <p className="text-[10px] text-slate-300 uppercase tracking-wider">Net</p>
-                  <p className={`text-base sm:text-lg font-bold ${Number(selectedAccount.totalWin) - Number(selectedAccount.totalLoss) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-                    {formatCurrency(Number(selectedAccount.totalWin) - Number(selectedAccount.totalLoss))}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <AccountChart key={`ac-${selectedAccount.id}-${historyChartKey}`} accountId={selectedAccount.id} />
-              </div>
-
-              <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 mb-4">
-                <h4 className="text-sm font-semibold text-white mb-3">Tambah Catatan</h4>
-                {historyError && <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-lg mb-3 text-sm">{historyError}</div>}
-                <form onSubmit={handleAddHistory} className="space-y-3">
-                  <div className="grid grid-cols-2 gap-2">
-                    <button type="button" onClick={() => setHistoryType("win")}
-                      className={`py-2.5 rounded-xl font-semibold text-sm transition ${historyType === "win" ? "bg-emerald-500/20 text-emerald-400 ring-2 ring-emerald-500" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                      ğŸ† Menang
-                    </button>
-                    <button type="button" onClick={() => setHistoryType("loss")}
-                      className={`py-2.5 rounded-xl font-semibold text-sm transition ${historyType === "loss" ? "bg-red-500/20 text-red-400 ring-2 ring-red-500" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                     ğŸ’” Kalah
-                    </button>
-                  </div>
-                  <input type="number" value={historyAmount} onChange={(e) => setHistoryAmount(e.target.value)}
-                    placeholder="Jumlah (Rp)" min="1" required
-                    className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition text-sm" />
-                  <input type="text" value={historyDesc} onChange={(e) => setHistoryDesc(e.target.value)}
-                    placeholder="Keterangan (opsional)"
-                    className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition text-sm" />
-                  <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-1.5">ğŸ“… Tanggal & Jam</label>
-                    <input type="datetime-local" value={historyDate} onChange={(e) => setHistoryDate(e.target.value)} required
-                      className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition text-sm [color-scheme:dark]" />
-                  </div>
-                  <button type="submit" disabled={submittingHistory}
-                    className={`w-full py-2.5 rounded-xl font-semibold text-sm transition disabled:opacity-60 ${historyType === "win" ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-red-500 text-white hover:bg-red-600"}`}>
-                    {submittingHistory ? "Menyimpan..." : historyType === "win" ? "ğŸ† Simpan Kemenangan" : "ğŸ’” Simpan Kekalahan"}
-                  </button>
-                </form>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-semibold text-white">Riwayat ({histories.length})</h4>
-                  {histories.length > 0 && (
-                    <button
-                      onClick={handleDeleteAllHistories}
-                      className="text-xs text-red-400/70 hover:text-red-400 transition flex items-center gap-1"
-                    >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                      Hapus Semua
-                    </button>
-                  )}
-                </div>
-                {loadingHistory ? (
-                  <div className="text-center py-8">
-                    <svg className="animate-spin h-6 w-6 text-emerald-400 mx-auto" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  </div>
-                ) : histories.length === 0 ? (
-                  <div className="text-center py-8"><p className="text-slate-500 text-sm">Belum ada riwayat</p></div>
-                ) : (
-                  <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                    {histories.map((h) => (
-                      <div key={h.id} className="flex items-center justify-between bg-slate-900/50 rounded-xl px-3 sm:px-4 py-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="text-lg flex-shrink-0">{h.type === "win" ? "ğŸ†" : "ğŸ’”"}</span>
-                          <div className="min-w-0">
-                            <p className={`font-bold text-sm ${h.type === "win" ? "text-emerald-400" : "text-red-400"}`}>
-                              {h.type === "win" ? "+" : "-"}{formatCurrency(Number(h.amount))}
-                            </p>
-                            <p className="text-xs text-slate-500 truncate">
-                              {h.description || (h.type === "win" ? "Kemenangan" : "Kekalahan")}
-                            </p>
-                            <p className="text-[10px] text-slate-600 mt-0.5">
-                              ğŸ“… {formatDate(h.date)}
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleDeleteHistory(h)}
-                          className="ml-2 p-2 bg-red-500/10 hover:bg-red-500/25 border border-red-500/20 hover:border-red-500/40 rounded-lg text-red-400 transition flex-shrink-0 active:scale-95"
-                          title="Hapus riwayat"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showExportModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white">Export ke Google Sheets</h3>
-                <button onClick={() => setShowExportModal(false)} className="p-2 hover:bg-slate-700 rounded-xl transition">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              </div>
-              <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-6">
-                <h4 className="text-sm font-semibold text-blue-400 mb-2">ğŸ“‹ Cara Export:</h4>
-                <ol className="text-xs text-blue-300 space-y-1 list-decimal list-inside">
-                  <li>Klik quot;Salin Data Akunquot; atau quot;Salin Riwayatquot;</li>
-                  <li>Buka Google Sheet dengan tombol di bawah</li>
-                  <li>Klik sel A1 lalu tekan <kbd className="bg-blue-500/20 px-1 py-0.5 rounded text-blue-200">Ctrl+V</kbd></li>
-                  <li>Data otomatis terisi rapi!</li>
-                </ol>
-              </div>
-              <div className="space-y-3">
-                <button onClick={handleCopyAccounts} className={`w-full flex items-center justify-between px-4 py-4 rounded-xl border transition ${exportCopied === "accounts" ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400" : "bg-slate-900/50 border-slate-700/50 text-slate-300 hover:border-emerald-500/30"}`}>
-                  <div className="flex items-center gap-3"><span className="text-2xl">ğŸ“¦</span><div className="text-left"><p className="font-semibold text-sm">Salin Data Akun</p><p className="text-xs text-slate-500">Link, username, password, menang, kalah</p></div></div>
-                  <span className="text-sm font-medium">{exportCopied === "accounts" ? "âœ… Tersalin!" : "ğŸ“‹ Salin"}</span>
-                </button>
-                <button onClick={handleCopyHistories} className={`w-full flex items-center justify-between px-4 py-4 rounded-xl border transition ${exportCopied === "histories" ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400" : "bg-slate-900/50 border-slate-700/50 text-slate-300 hover:border-emerald-500/30"}`}>
-                  <div className="flex items-center gap-3"><span className="text-2xl">ğŸ“Š</span><div className="text-left"><p className="font-semibold text-sm">Salin Riwayat Menang/Kalah</p><p className="text-xs text-slate-500">Semua catatan dengan tanggal & jam</p></div></div>
-                  <span className="text-sm font-medium">{exportCopied === "histories" ? "âœ… Tersalin!" : "ğŸ“‹ Salin"}</span>
-                </button>
-                <button onClick={handleDownloadCSV} className="w-full flex items-center justify-between px-4 py-4 bg-slate-900/50 border border-slate-700/50 rounded-xl text-slate-300 hover:border-blue-500/30 transition">
-                  <div className="flex items-center gap-3"><span className="text-2xl">ğŸ’¾</span><div className="text-left"><p className="font-semibold text-sm">Download CSV</p><p className="text-xs text-slate-500">File CSV bisa di-import ke Google Sheets</p></div></div>
-                  <span className="text-sm font-medium">â¬‡ï¸ Download</span>
-                </button>
-                <div className="border-t border-slate-700/50 pt-3">
-                  <a href={GOOGLE_SHEET_URL} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl text-sm font-semibold transition">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zM9 17H6v-3h3v3zm0-5H6V9h3v3zm0-5H6V4h3v3zm5 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V4h3v3zm4 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V4h3v3z" /></svg>
-                    Buka Google Sheet â†’ Paste Data
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+                  <p className="text-[10px] t
