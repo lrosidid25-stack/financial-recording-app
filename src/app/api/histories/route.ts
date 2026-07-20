@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       .eq("id", accountId)
       .single();
     if (accData) {
-      const current = Number(accData[field]) || 0;
+      const current = Number((accData as Record<string,unknown>)[field]) || 0;
       await supabase
         .from("accounts")
         .update({ [field]: Number((current + Number(amount)).toFixed(2)), updated_at: new Date().toISOString() })
@@ -66,7 +66,7 @@ export async function DELETE(request: NextRequest) {
       .eq("id", accountId)
       .single();
     if (accData) {
-      const current = Number(accData[field]) || 0;
+      const current = Number((accData as Record<string,unknown>)[field]) || 0;
       const newVal = Math.max(0, current - Number(amount));
       await supabase
         .from("accounts")
