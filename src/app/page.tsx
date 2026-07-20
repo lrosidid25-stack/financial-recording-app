@@ -526,7 +526,7 @@ export default function HomePage() {
                   <label className="block text-sm font-medium text-slate-300 mb-2">Catatan (opsional)</label>
                   <textarea value={formNotes} onChange={(e) => setFormNotes(e.target.value)} rows={2} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition resize-none" placeholder="Catatan tambahan..." />
                 </div>
-                <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition diesabled:opacity-60 disabled:cursor-not-allowed">
+                <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
                   {submitting ? "Menyimpan..." : editingAccount ? "💾 Simpan Perubahan" : "➕ Tambah Akun"}
                 </button>
               </form>
@@ -692,7 +692,7 @@ export default function HomePage() {
                   <span className="text-sm font-medium">⬇️ Download</span>
                 </button>
                 <div className="border-t border-slate-700/50 pt-3">
-                  <a href={GOOGLE_SHEET_URL} target="\"_blank\"" rel="\"noopener noreferrer\"" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700text-white px-4 py-3 rounded-xl text-sm font-semibold transition">
+                  <a href={GOOGLE_SHEET_URL} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl text-sm font-semibold transition">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zM9 17H6v-3h3v3zm0-5H6V9h3v3zm0-5H6V4h3v3zm5 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V4h3v3zm4 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V4h3v3z" /></svg>
                     Buka Google Sheet → Paste Data
                   </a>
