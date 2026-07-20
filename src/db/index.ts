@@ -1,23 +1,10 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
   throw new Error("DATABASE_URL is required.");
 }
 
-const globalForDb = globalThis as typeof globalThis & { __dbPool?: Pool };
-
-const isProduction = process.env.NODE_ENV === "production";
-const useSSL = databaseUrl.includes("supabase") || databaseUrl.includes("neon.tech") || isProduction;
-
-export const pool = globalForDb.__dbPool ?? new Pool({ 
-  connectionString: databaseUrl, 
-  ssl: useSSL ? { rejectUnauthorized: false } : false,
-  connectionTimeoutMillis: 10000,
-  max: 3
-});
-
-if (!isProduction) { globalForDb.__dbPool = pool; }
-
-export const db = drizzle(pool);
+const sql = neon(databaseUrl);
+export const db = drizzle({ client: sql });
