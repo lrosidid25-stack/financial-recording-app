@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { accounts } from "@/db/schema";
-import { sql } from "drizzle-orm";
+import { supabase } from "@/db";
 
 export async function GET() {
-  const [result] = await db.select({
-    totalAccounts: sql<string>`COUNT(*)`,
-    totalWin: sql<string>`COALESCE(SUM(${accounts.totalWin}), 0)`,
-    totalLoss: sql<string>`COALESCE(SUM(${accounts.totalLoss}), 0)`,
-  }).from(accounts);
-  const totalWin = Number(result.totalWin);
-  const totalLoss = Number(result.totalLoss);
-  return NextResponse.json({
-    totalAccounts: Number(result.totalAccounts),
-    totalWin, totalLoss,
-    netProfit: totalWin - totalLoss,
-  });
+  try {
+    const { data: accounts, error } = await supabase.from("accounts").select("total_win,total_loss");
+    if (error) throw error;
+    const totalAccounts = accounts.length;
+    const totalWin = accounts.reduce((s: number, a: any) => s + Number(a.total_win || 0), 0);
+    const totalLoss = accounts.reduce((s: number, a: any) => s + Number(a.total_loss || 0), 0);
+    return NextResponse.json({ totalAccounts, totalWin, totalLoss, netProfit: totalWin - totalLoss });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ totalAccounts: 0, totalWin: 0, totalLoss: 0, netProfit: 0 });
+  }
 }
